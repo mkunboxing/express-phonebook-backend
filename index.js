@@ -31,7 +31,7 @@ async function saveContacts() {
 }
 
 app.get("/contacts", (req, res) => {
-    res.json({ data: contacts });
+   return res.json({ data: contacts });
 });
 
 // search by firstName or lastname
@@ -71,7 +71,7 @@ app.post("/contact/add", (req, res) => {
 
     saveContacts();
 
-    res.json({ status: 'success', id });
+    return res.json({ status: 'success', id });
 });
 
 // Delete by firstname or lastname
@@ -92,7 +92,36 @@ app.delete("/contact/delete/:name", (req, res) => {
 
     saveContacts(); // Save the updated contacts to the file
 
-    res.json({ status: 'success', message: 'Contact deleted successfully', deletedContact });
+   return  res.json({ status: 'success', message: 'Contact deleted successfully', deletedContact });
+});
+
+
+app.put("/contact/update/:name", (req, res) => {           // extra gobi work 
+    const nameToUpdate = req.params.name;
+    const { firstName, lastName, phone } = req.body;
+
+    // Find the index of the contact with the specified first name or last name
+    const contactIndex = contacts.findIndex(contact =>
+        contact.firstName === nameToUpdate || contact.lastName === nameToUpdate
+    );
+
+    if (contactIndex === -1) {
+        return res.status(404).json({ status: 'error', message: 'Contact not found' });
+    }
+
+    // Check if the updated phone number already exists
+    const existingContact = contacts.find(contact => contact.phone === phone && contactIndex !== contact.id);
+
+    if (existingContact) {
+        return res.status(400).json({ status: 'error', message: 'Contact with the same phone number already exists' });
+    }
+
+    // Update the contact
+    contacts[contactIndex] = { ...contacts[contactIndex], firstName, lastName, phone };
+
+    saveContacts(); // Save the updated contacts to the file
+
+    return res.json({ status: 'success', message: 'Contact updated successfully' });
 });
 
 app.listen(port, () => {
