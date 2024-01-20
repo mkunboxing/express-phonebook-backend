@@ -11,14 +11,14 @@ const contactsFilePath = 'contacts.json';
 let contacts = [];
 
 // Load contacts from the JSON file on server startup
-(async () => {
+async () => {
     try {
         const data = await fs.readFile(contactsFilePath, 'utf-8');
         contacts = JSON.parse(data);
     } catch (error) {
         console.error('Error loading contacts:', error.message);
     }
-})();
+};
 
 // Save contacts to the JSON file
 async function saveContacts() {
