@@ -96,7 +96,7 @@ app.delete("/contact/delete/:name", (req, res) => {
 });
 
 
-app.put("/contact/update/:name", (req, res) => {           // extra gobi work 
+app.put("/contact/update/:name", (req, res) => {           // extra gobi work by the help of chatgpt
     const nameToUpdate = req.params.name;
     const { firstName, lastName, phone } = req.body;
 
